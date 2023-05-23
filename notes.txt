@@ -1,0 +1,115 @@
+
+
+
+# BRAINSTORMING
+
+trickle
+income
+cents
+live
+timer
+stopwatch
+countup
+pileup
+money
+watch 
+earnings
+earn
+wealth
+renumeration
+wage
+
+earningsenumerator
+incomeincrementor
+wagewatch (taken)
+cashflowclock
+
+chronometer
+clock
+
+
+
+# IDEAS
+
+help
+home
+about
+projects
+social
+contact
+clear
+mode (dark/light)
+cmd - display complete command list
+
+
+
+You made $___ in __H__M__S at a rate of _____$/H.
+You made $___ in __H__M__S at a salary of _____ (whole year averaged).
+You made $___ in __H__M__S at a salary of _____ (simulated 40H/W wage).
+
+
+timeismoneyfriend.com
+
+list of common salary ranges
+list of common hourly wages
+
+
+# NOTES
+
+360000 per hour
+OH FMW = $9.30  // Ohio Federal Minimum Wage
+
+//stopwatch
+https://codepen.io/Dansir/pen/RwQmVgr
+//input filter
+https://codepen.io/dukecroc/pen/ewodXd
+//button
+https://codepen.io/kathykato/pen/gOOjgmP
+
+
+
+
+# APP FLOW
+
+user enters site
+choose option:
+
+A) hourly wage
+B) salary wage
+
+
+FOR A
+
+    Enter hourly wage 
+    Calculate wage/10ms
+        hour = 3600 seconds = 3,600,000 ms 
+
+    TODO: timer edit mode? Like a calculator... or separate page for that?
+
+
+FOR B
+
+    Enter yearly salary
+    Choose:
+        Averaged over time 24/7/365
+        Calculate 'approximate' hourly wage @40hours/week 
+    
+
+
+# OPTIONS
+
+change timer resolution? (ms or 10ms could be annoying to look at)
+
+
+
+
+
+
+
+
+
+
+
+
+
+

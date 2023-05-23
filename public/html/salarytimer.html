@@ -1,0 +1,66 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400&display=swap" rel="stylesheet">
+
+    <title>Wage Watch | Salary Timer</title>
+    <meta name="description" content="Time is Money">
+    <meta name="author" content="coffeeswirl27">
+
+    <meta property="og:title" content="Wage Watch">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:description" content="Time is Money">
+    <meta property="og:image" content="">
+
+    <!-- <link rel="icon" href="images/favicon.ico"> -->
+    <!-- <link rel="icon" href="images/favicon.svg" type="image/svg+xml"> -->
+    <!-- <link rel="apple-touch-icon" href="images/apple-touch-icon.png"> -->
+
+    <link rel="stylesheet" href="dist/style.css">
+
+</head>
+
+
+<body>
+
+    <div class="main container flex flex-ai-c flex-jc-c flex-col">
+        <div id="timeContainer">
+            <div class="inputLabel">Input Your Yearly Salary</div>
+            <div><input id="currencyTextBox" class="salaryInput"></div>
+            <div class="inputLabel">Select Simulation Type</div>
+            <input type="radio" id="yearAverageHourly" name="selector" class="selector-item_radio" checked>
+            <label for="yearAverageHourly" class="selector-item_label">24/7/365</label>
+            <input type="radio" id="fortyHourWeekHourly" name="selector" class="selector-item_radio">
+            <label for="fortyHourWeekHourly" class="selector-item_label">40H/WEEK</label>
+            <br>
+
+            <div id="timeDisplay">Elapsed Time: 00:00:00:00</div>
+            <div id="moneyDisplay">Total Earnings: $ 0.00</div>
+
+            <button id="startButton" class="timerButton greenbutton learn-more">Start</button>
+            <button id="pauseButton" class="timerButton pinkbutton learn-more">Pause</button>
+            <button id="lapButton" class="timerButton yellowbutton learn-more">Lap</button>
+            <button id="resetButton" class="timerButton bluebutton learn-more">Reset</button>
+        </div>
+        <div class="homebutton">
+            <button class="learn-more greybutton" id="home">HOME</button>
+        </div>
+    </div>
+    <div id="lapContainer">
+        <ul id="lapTimeDisplay"></ul>
+    </div>
+
+
+    <script src="js/salarytimer.js"></script>
+    <script src="js/inputfilter.js"></script>
+
+</body>
+
+</html>
