@@ -1,14 +1,22 @@
 {
   "name": "wage-watch",
   "version": "1.0.0",
+  "description": "A Node.js application that allows users to visualize their earnings in real-time based on their salary or hourly wage.",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "node.js",
+    "real-time",
+    "earnings",
+    "salary",
+    "wage",
+    "visualization"
+  ],
   "author": "coffeeswirl27",
-  "license": "ISC",
-  "keywords": [],
-  "description": "",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2"
   }
