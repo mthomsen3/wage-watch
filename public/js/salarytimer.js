@@ -1,144 +1,110 @@
+// UI Elements
 const timeDisplay = document.querySelector("#timeDisplay");
 const moneyDisplay = document.querySelector("#moneyDisplay");
 const lapTimeDisplay = document.querySelector("#lapTimeDisplay");
-const startButton = document.querySelector("#startButton");
-const lapButton = document.querySelector("#lapButton");
-const pauseButton = document.querySelector("#pauseButton");
-const resetButton = document.querySelector("#resetButton");
-
 const salaryInput = document.querySelector(".salaryInput");
-const yearAverageHourly = document.getElementById('yearAverageHourly')
-const fortyHourWeekHourly = document.getElementById('fortyHourWeekHourly')
-
-let startTime = 0;
-let elapsedTime = 0;
-let currentTime = 0;
-let paused = true;
-let intervalId;
-let laps = 1;
-let lastLap = { hrs: 0, mins: 0, secs: 0, tms: 0, ms: 0 };
-let hrs = 0;
-let mins = 0;
-let secs = 0;
-let ms = 0;
-let money = 0;
-let selectedAvg = 0;
-let tmsly = 0;
-
-document.getElementById("home").onclick = function () {
-    location.href = "/";
+const yearAverageHourly = document.getElementById('yearAverageHourly');
+const fortyHourWeekHourly = document.getElementById('fortyHourWeekHourly');
+const buttons = {
+    start: document.querySelector("#startButton"),
+    lap: document.querySelector("#lapButton"),
+    pause: document.querySelector("#pauseButton"),
+    reset: document.querySelector("#resetButton")
 };
 
-startButton.addEventListener("click", () => {
-    if (paused) {
-        paused = false;
-        if (yearAverageHourly.checked) {
-            // # work tms (ten millisec) in 1 year
-            // ms/year = 31540000000 source=google query=milliseconds per year
-            selectedAvg = 3154000000;
-            
-        } else if (fortyHourWeekHourly.checked) {
-            // # work tms (ten millisec) in 40H x 50W
-            // ms/2000 hours = 7200000000
-            selectedAvg = 720000000;
-        } else {
-            selectedAvg = 0;
-        }
-        salary = salaryInput.value;
-        startTime = Date.now() - elapsedTime;
-        intervalId = setInterval(updateTime, 1);
-    }
-});
+// Constants
+const MS_PER_HOUR = 3600000; 
+const MS_PER_YEAR = 31540000000;  // Milliseconds per year
+const MS_PER_FORTY_HOURS_WEEK = 720000000;  // Milliseconds per 40 hours week
+const INTERVAL_DELAY_MS = 30;  // Interval delay in milliseconds
 
-lapButton.addEventListener("click", () => {
-    if (!paused) {
-        paused = false;
-        addLap();
-    }
-});
-
-pauseButton.addEventListener("click", () => {
-    if (!paused) {
-        paused = true;
-        elapsedTime = Date.now() - startTime;
-        clearInterval(intervalId);
-    }
-});
-
-resetButton.addEventListener("click", () => {
-    paused = true;
-    clearInterval(intervalId);
-    startTime = 0;
-    elapsedTime = 0;
-    currentTime = 0;
-    laps = 1;
-    lastLap = { hrs: 0, mins: 0, secs: 0, tms: 0, ms: 0 };
-    hrs = 0;
-    mins = 0;
-    secs = 0;
-    ms = 0;
-    money = 0;
-    moneyDisplay.textContent = "Total Earnings: $ 0.00";
-    timeDisplay.textContent = "Elapsed Time: 00:00:00:00";
-    lapTimeDisplay.textContent = "";
-    selectedAvg = 0;
-});
-
-
+// Variables
+let startTime = 0;
+let elapsedTime = 0;
+let intervalId;
+let salary = 0;
+let moneyPerMs = 0;
+let lapData = { elapsedTime: 0, money: 0 };
+let laps = 1;
 
 function pad(unit) {
-    return (("0") + unit).length > 2 ? unit : "0" + unit;
+    return unit.toString().padStart(2, '0');
 }
 
 function updateTime() {
     elapsedTime = Date.now() - startTime;
 
-    ms = Math.floor((elapsedTime / 10) % 100);
-    tms = Math.floor((elapsedTime / 10));
-    secs = Math.floor((elapsedTime / 1000) % 60);
-    mins = Math.floor((elapsedTime / (1000 * 60)) % 60);
-    hrs = Math.floor((elapsedTime / (1000 * 60 * 60)) % 60);
+    const hours = Math.floor(elapsedTime / MS_PER_HOUR);
+    const minutes = Math.floor((elapsedTime % MS_PER_HOUR) / (1000 * 60));
+    const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+    const ms = Math.floor((elapsedTime % 1000) / 10);
 
-    // ms updates are too quick for browser, but sec updates seem to slow
-    // using 10ms (tms) which seems to work fine, may need upated to 100ms
-    // if latency issues crop up in the future
-    tmsly = salary / selectedAvg;
-    money = (tmsly * tms).toFixed(2);
-
-    ms = pad(ms);
-    secs = pad(secs);
-    mins = pad(mins);
-    hrs = pad(hrs);
-
+    const money = (moneyPerMs * elapsedTime).toFixed(2);
 
     moneyDisplay.textContent = `Total Earnings: $ ${money}`;
-    timeDisplay.textContent = `Elapsed Time: ${hrs}:${mins}:${secs}:${ms}`;
-
+    timeDisplay.textContent = `Elapsed Time: ${pad(hours)}:${pad(minutes)}:${pad(seconds)}:${pad(ms)}`;
 }
 
+
 function addLap() {
+    const lapElapsedTime = elapsedTime - lapData.elapsedTime; // Calculate the elapsed time for this lap
 
-    let lapMs = Math.abs(ms - lastLap.ms);
-    let lapTms = Math.abs(tms - lastLap.tms);
-    let lapSecs = Math.abs(secs - lastLap.secs);
-    let lapMins = Math.abs(mins - lastLap.mins);
-    let lapHrs = Math.abs(hrs - lastLap.hrs);
-    lastLap = { hrs, mins, secs, tms, ms };
+    const lapHours = Math.floor(lapElapsedTime / MS_PER_HOUR);
+    const lapMinutes = Math.floor((lapElapsedTime % MS_PER_HOUR) / (1000 * 60));
+    const lapSeconds = Math.floor((lapElapsedTime % (1000 * 60)) / 1000);
+    const lapMs = Math.floor((lapElapsedTime % 1000) / 10);
 
-    lapMoney = (tmsly * lapTms).toFixed(2);
-
-    lapMs = pad(lapMs);
-    lapSecs = pad(lapSecs);
-    lapMins = pad(lapMins);
-    lapHrs = pad(lapHrs);
+    const currentMoney = (moneyPerMs * elapsedTime).toFixed(2); // Calculate the current money
+    const lapMoney = (currentMoney - lapData.money).toFixed(2); // Calculate the money earned during this lap
 
     let printLap = document.createElement("li");
-    if(selectedAvg == 3154000000) {
-        printLap.textContent = `You made $ ${lapMoney} in ${lapHrs}:${lapMins}:${lapSecs}:${lapMs} at a yearly salary of $ ${salary} (whole year averaged)`;
-
-    } else if (selectedAvg == 720000000) {
-        printLap.textContent = `You made $ ${lapMoney} in ${lapHrs}:${lapMins}:${lapSecs}:${lapMs} at a yearly salary of $ ${salary} (simulated 40H/W wage)`;
+    if(moneyPerMs === salary / MS_PER_YEAR) {
+        printLap.textContent = `You made $ ${lapMoney} in ${pad(lapHours)}:${pad(lapMinutes)}:${pad(lapSeconds)}:${pad(lapMs)} at a yearly salary of $ ${salary} (whole year averaged)`;
+    } else if (moneyPerMs === salary / MS_PER_FORTY_HOURS_WEEK) {
+        printLap.textContent = `You made $ ${lapMoney} in ${pad(lapHours)}:${pad(lapMinutes)}:${pad(lapSeconds)}:${pad(lapMs)} at a yearly salary of $ ${salary} (simulated 40H/W wage)`;
     }
     lapTimeDisplay.append(printLap);
     laps += 1;
+
+    // Update the start time and money for the next lap
+    lapData = { elapsedTime, money: parseFloat(currentMoney) };
 }
+
+function resetVariables() {
+    startTime = 0;
+    elapsedTime = 0;
+    lapData = { elapsedTime: 0, money: 0 };
+    laps = 1;
+    moneyDisplay.textContent = "Total Earnings: $0.00";
+    timeDisplay.textContent = "Elapsed Time: 00:00:00:00";
+    lapTimeDisplay.textContent = "";
+    salary = 0;
+    moneyPerMs = 0;
+}
+
+document.getElementById("home").onclick = () => location.href = "/";
+
+buttons.start.addEventListener("click", () => {
+    if (salaryInput.value) {
+        salary = parseFloat(salaryInput.value);
+        if (yearAverageHourly.checked) {
+            moneyPerMs = salary / MS_PER_YEAR;
+        } else if (fortyHourWeekHourly.checked) {
+            moneyPerMs = salary / MS_PER_FORTY_HOURS_WEEK;
+        } else {
+            console.error('Please select average salary calculation method.');
+            return;
+        }
+        startTime = Date.now() - elapsedTime;
+        intervalId = setInterval(updateTime, INTERVAL_DELAY_MS);
+    } else {
+        console.error('Please input a valid salary.');
+    }
+});
+
+buttons.lap.addEventListener("click", addLap);
+buttons.pause.addEventListener("click", () => clearInterval(intervalId));
+buttons.reset.addEventListener("click", () => {
+    clearInterval(intervalId);
+    resetVariables();
+});
